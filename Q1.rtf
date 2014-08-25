@@ -1,10 +1,10 @@
 1. a) List all the actors who acted in at least one film in 2nd half of the 19th century and in at least one film in the 1st half of the 20th century
 
 # Second half of 19th century
-select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1850 and 1899;
+SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id  AND Movie.year BETWEEN 1850 AND 1899;
 
 # First half of 20th century
-select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1900 and 1949;
+SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id  AND Movie.year BETWEEN 1900 AND 1949;
 
 SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1850 AND 1899) AND EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1900 AND 1949); 
 
@@ -50,5 +50,14 @@ SELECT a.id, a.fname, a.lname FROM Actor AS a WHERE 10 <= (SELECT COUNT(DISTINCT
 
 7. Find all actors who acted only in films before 1960.
 
-SELECT	a.id, a.fname, a.lname FROM Actor a, Cast c, Movie m WHERE	a.id = c.pid	AND c.mid = m.id GROUP BY a.id, a.fname, a.lname HAVING	MAX(m.year) < 1960; 
+SELECT	a.id, a.fname, a.lname FROM Actor a, Cast c, Movie m WHERE	a.id = c.pid AND c.mid = m.id GROUP BY a.id, a.fname, a.lname HAVING	MAX(m.year) < 1960; 
+
+- 102169 rows in set (2 min 19.05 sec) -
+
+8.  Find the films with more women actors than men.
+SELECT m.id, m.name FROM Movie AS m, Cast as c1, Actor AS a WHERE c1.mid = m.id AND c1.pid = a.id AND a.gender = ‘F’ GROUP BY m.id, m.name HAVING COUNT(*) > (SELECT COUNT(*) FROM Cast AS c2, Actor AS a WHERE c2.mid = m.id AND c2.pid = a.id AND a.gender = ‘M’);
+
+
+
+
 
