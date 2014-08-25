@@ -10,7 +10,7 @@ SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS (SELECT * FROM
 
 b) List all the directors who directed a film in a leap year
 
-SELECT Directors.lname, Directors.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
+SELECT Directors.lname, Directors.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0));
 
 2. List all the movies that have the same year as the movie 'Shrek (2001)', but a better rank. (Note: bigger value of rank implies a better rank)
 
