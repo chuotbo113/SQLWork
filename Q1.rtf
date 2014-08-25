@@ -6,8 +6,12 @@ select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1850
 # First half of 20th century
 select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1900 and 1949;
 
-SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1850 AND 1899) AND EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1900 AND 1949); 
+SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS
+(SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1850 AND 1899) 
+AND EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1900 AND 1949); 
 
 b) List all the directors who directed a film in a leap year
 
-SELECT d.lname, d.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
+SELECT d.lname, d.fname FROM	Directors WHERE EXISTS 
+(SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND
+((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
