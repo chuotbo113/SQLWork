@@ -10,7 +10,7 @@ SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS (SELECT * FROM
 
 b) List all the directors who directed a film in a leap year
 
-SELECT Directors.lname, Directors.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0));
+SELECT Directors.lname, Directors.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
 
 2. List all the movies that have the same year as the movie 'Shrek (2001)', but a better rank. (Note: bigger value of rank implies a better rank)
 
@@ -27,4 +27,28 @@ SELECT a.id, a.fname, a.lname FROM Actor a, Movie b, Cast c WHERE a.id = c.pid	A
 4.  List all directors in descending order of the number of films they directed
 
 SELECT	a.id, a.fname, a.lname, COUNT(b.mid) AS num_movies FROM Directors AS a LEFT JOIN Movie_Directors AS b ON a.id = b.did GROUP BY a.id, a.fname, a.lname ORDER BY num_movies desc;
+
+5.a. Find the film(s) with the largest cast.   
+  b. Find the film(s) with the smallest cast.
+In both cases, also return the size of the cast.
+
+# Largest Cast
+
+SELECT mid, name, num FROM Movie a, (SELECT mid, COUNT(*) AS num FROM Cast b GROUP BY mid) mm WHERE num = ( SELECT MAX(num) FROM (SELECT mid, COUNT(*) AS num FROM Cast GROUP BY mid ) mn ) AND a.id = mm.mid;
+
+- 1 row in set (5.44 sec) -
+
+# Smallest Cast 
+
+SELECT mid, name, num FROM Movie a, (SELECT mid, COUNT(*) AS num FROM Cast b GROUP BY mid) mm WHERE num = ( select min (num) FROM (SELECT mid, COUNT(*) AS num FROM Cast GROUP BY mid ) mn )AND a.id = mm.mid;
+
+- 39564 rows in set (6.59 sec) -
+
+6.  Find all the actors who acted in films by at least 10 distinct directors (i.e. actors who worked with at least 10 distinct directors).
+
+SELECT a.id, a.fname, a.lname FROM Actor AS a WHERE 10 <= (SELECT COUNT(DISTINCT md.did) FROM Movie AS m, Cast AS c, Movie_Directors AS md WHERE c.mid = m.id AND md.mid = m.id AND c.pid = a.id);
+
+7. Find all actors who acted only in films before 1960.
+
+SELECT	a.id, a.fname, a.lname FROM Actor a, Cast c, Movie m WHERE	a.id = c.pid	AND c.mid = m.id GROUP BY a.id, a.fname, a.lname HAVING	MAX(m.year) < 1960; 
 
