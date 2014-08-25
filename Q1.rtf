@@ -6,15 +6,25 @@ select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1850
 # First half of 20th century
 select * from Movie, Cast where Cast.mid = Movie.id  and Movie.year between 1900 and 1949;
 
-SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS 
-(SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND 
-Movie.year BETWEEN 1850 AND 1899) AND EXISTS (SELECT * FROM Movie, 
-Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1900 AND 1949); 
+SELECT Actor.id, Actor.lname, Actor.fname FROM Actor WHERE EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1850 AND 1899) AND EXISTS (SELECT * FROM Movie, Cast WHERE Cast.mid = Movie.id AND Actor.id = Cast.pid AND Movie.year BETWEEN 1900 AND 1949); 
 
 b) List all the directors who directed a film in a leap year
 
-SELECT Directors.lname, Directors.fname FROM	Directors 
-WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id 
-AND Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
+SELECT Directors.lname, Directors.fname FROM	Directors WHERE EXISTS (SELECT * FROM Movie, Movie_Directors WHERE Movie_Directors.mid = Movie.id and Movie_Directors.did = Directors.id AND ((Movie.year % 4 = 0 and Movie.year % 100 <> 0) or Movie.year % 400 = 0))	
 
 2. List all the movies that have the same year as the movie 'Shrek (2001)', but a better rank. (Note: bigger value of rank implies a better rank)
+
+SELECT b.id, b.name FROM Movie a, Movie b WHERE a.name = 'Shrek (2001)' AND a.year = b.year AND a.rank < b.rank;
+
+ - 197 rows in set (0.18 sec) -
+
+3.  List first name and last name of all the actors who played in the movie 'Officer 444 (1926)'
+
+SELECT a.id, a.fname, a.lname FROM Actor a, Movie b, Cast c WHERE a.id = c.pid	AND c.mid = b.id AND b.name = 'Officer 444 (1926)’;
+
+- 13 rows in set (16.20 sec) - 
+
+4.  List all directors in descending order of the number of films they directed
+
+SELECT	a.id, a.fname, a.lname, COUNT(b.mid) AS num_movies FROM Directors AS a LEFT JOIN Movie_Directors AS b ON a.id = b.did GROUP BY a.id, a.fname, a.lname ORDER BY num_movies desc;
+
